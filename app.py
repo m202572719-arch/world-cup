@@ -13,7 +13,7 @@ except Exception as e:
     st.error("Gemini API 客户端初始化失败，请检查云端 Secrets 配置。")
 
 # ==========================================
-# 2. 2026美加墨世界杯：官方正赛 48 强高精度量化数据库（严格对照分组图）
+# 2. 2026美加墨世界杯：官方正赛 48 强量化数据库
 # ==========================================
 TEAM_DATABASE = {
     # --- Group A ---
@@ -43,7 +43,7 @@ TEAM_DATABASE = {
     # --- Group E ---
     "德国": {"Elo": 1980, "Att": 1.28, "Def": 0.88, "Pedigree": 1.25, "Alt_Fit": False, "Style": "日耳曼战车重回稳健，强调中场控制与战术纪律，整体向前推进。"},
     "库拉索": {"Elo": 1550, "Att": 0.90, "Def": 1.05, "Pedigree": 1.00, "Alt_Fit": False, "Style": "大黑马，多名归化坐镇，具备突出的单兵身体素质。"},
-    "科特迪瓦": {"Elo": 1795, "Att": 1.14, "Def": 0.91, "Pedigree": 1.05, "Alt_Fit": False, "Style": "非洲大象身体素质拉满，中后场防守拦截硬度高，冲击力极强. "},
+    "科特迪瓦": {"Elo": 1795, "Att": 1.14, "Def": 0.91, "Pedigree": 1.05, "Alt_Fit": False, "Style": "非洲大象身体素质拉满，中后场防守拦截硬度高，冲击力极强。"},
     "厄瓜多尔": {"Elo": 1870, "Att": 1.08, "Def": 0.83, "Pedigree": 1.00, "Alt_Fit": True, "Style": "高原体能怪，中场疯狗逼抢，两翼边路插上飞快。"},
 
     # --- Group F ---
@@ -92,39 +92,39 @@ TEAM_DATABASE = {
 GLOBAL_AVG_GOALS = 1.35
 
 # ==========================================
-# 3. 动态全维度精算模型 (支持主客场双向东道主检测)
+# 3. 动态全维度精算数学模型
 # ==========================================
 def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A, squad_integrity_B):
     data_A, data_B = TEAM_DATABASE[team_A], TEAM_DATABASE[team_B]
     att_A, def_A = data_A["Att"], data_A["Def"]
     att_B, def_B = data_B["Att"], data_B["Def"]
     
-    # 伤病完整度折损系数
+    # 核心阵容完整度微调
     att_A *= (squad_integrity_A / 100.0)
     att_B *= (squad_integrity_B / 100.0)
     
     lambda_A = att_A * def_B * GLOBAL_AVG_GOALS
     lambda_B = att_B * def_A * GLOBAL_AVG_GOALS
     
-    # 【全面修正】：差异化判断主场或客场的东道主权重
+    # 严格注入美国和加拿大的主场差异化权重因子
     if team_A == "美国":
-        lambda_A *= 1.15  # 美国主场哨与美式场馆系数
+        lambda_A *= 1.15  # 美国主场：美式场馆判罚与声浪博弈
     elif team_A in ["墨西哥", "加拿大"]:
-        lambda_A *= 1.12  # 墨西哥、加拿大常规主场加成
+        lambda_A *= 1.12  # 加拿大（人工快草）/ 墨西哥常规主场加成
         
     if team_B == "美国":
         lambda_B *= 1.15
     elif team_B in ["墨西哥", "加拿大"]:
         lambda_B *= 1.12
         
-    # 高海拔地缘缺氧环境特殊折损 (仅针对墨西哥赛区激活)
+    # 墨西哥高海拔缺氧地缘折损
     if is_high_altitude:
         if not data_A["Alt_Fit"]:
             lambda_A *= 0.92
         if not data_B["Alt_Fit"]:
             lambda_B *= 0.92
             
-    # 计算双泊松离散概率矩阵
+    # 双泊松离散进球概率矩阵计算
     max_goals = 6
     score_matrix = np.zeros((max_goals, max_goals))
     for i in range(max_goals):
@@ -135,7 +135,7 @@ def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A
     prob_draw = float(np.sum(np.diag(score_matrix)))
     prob_B_win = float(np.sum(np.triu(score_matrix, 1)))
     
-    # 世界杯冠军DNA（Pedigree）权重博弈干预
+    # 大赛DNA底蕴微调
     pedigree_gap = data_A["Pedigree"] - data_B["Pedigree"]
     if pedigree_gap > 0:
         prob_A_win += (pedigree_gap * 0.1)
@@ -144,11 +144,11 @@ def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A
         prob_B_win += (abs(pedigree_gap) * 0.1)
         prob_A_win -= (abs(pedigree_gap) * 0.1)
         
-    # 归一化重整
+    # 归一化
     total = prob_A_win + prob_draw + prob_B_win
     prob_A_win, prob_draw, prob_B_win = prob_A_win/total, prob_draw/total, prob_B_win/total
     
-    # 提炼比分波胆前三名
+    # 波胆前三精算
     flat_indices = np.argsort(score_matrix.ravel())[::-1][:3]
     top_scores = []
     for idx in flat_indices:
@@ -158,12 +158,12 @@ def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A
     return prob_A_win, prob_draw, prob_B_win, lambda_A, lambda_B, top_scores
 
 # ==========================================
-# 4. Streamlit 交互层
+# 4. Streamlit 前端交互面板
 # ==========================================
 st.set_page_config(page_title="2026世界杯精算推演器", page_icon="🏆", layout="wide")
 
-st.title("🏆 2026美加墨世界杯：48强正赛足彩精密辅助系统")
-st.markdown("⚠️ **数据安全重校版本：** 完美接入高级 3.5 Flash 开发接口。数学矩阵已双向绑定美、加、墨三大东道主独立主场盘口权重。")
+st.title("🏆 2026美加墨世界杯：48强官方正赛足彩精密辅助系统")
+st.markdown("⚠️ **数据安全重校版本：** 完美适配匿名云端接口，全面绑定美国（1.15）、加拿大（1.12）、墨西哥（1.12）独立主场地缘盘口权重。")
 st.divider()
 
 st.sidebar.header(f"📊 官方正赛 48 强精准量化看板")
@@ -173,7 +173,7 @@ st.sidebar.dataframe(sidebar_df, height=600)
 st.subheader("🛠️ 彩票临场变数调节（结合突发受伤、停赛、球场海拔）")
 col_env1, col_env2, col_env3 = st.columns(3)
 with col_env1:
-    is_altitude = st.checkbox("🏔️ 设定本场在墨西哥阿兹特克等高海拔缺氧球场（非高原队获进球期望扣减）")
+    is_altitude = st.checkbox("🏔️ 设定本场在墨西哥阿兹特克等高海拔缺氧球场（激活高海拔折损机制）")
 with col_env2:
     integrity_A = st.slider("🎯 主队临场核心完整度 (%)", 50, 100, 100)
 with col_env3:
@@ -187,8 +187,8 @@ with col_a:
 with col_b:
     team_B = st.selectbox("🛡️ 选择客队 (Team B)", list(TEAM_DATABASE.keys()), index=7)  # 默认波黑
 
-st.info(f"💡 **主队盘口实力分析 ({team_A})：** {TEAM_DATABASE[team_A]['Style']}")
-st.info(f"💡 **客队盘口实力分析 ({team_B})：** {TEAM_DATABASE[team_B]['Style']}")
+st.info(f"💡 **主队基本面分析 ({team_A})：** {TEAM_DATABASE[team_A]['Style']}")
+st.info(f"💡 **客队基本面分析 ({team_B})：** {TEAM_DATABASE[team_B]['Style']}")
 
 if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_container_width=True):
     if team_A == team_B:
@@ -212,10 +212,10 @@ if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_contai
         st.divider()
         
         # ==========================================
-        # 5. 调用大模型生成战术策略报告（对接 3.5 Flash 正规生产接口字符串）
+        # 5. 调用大模型生成战术策略报告（彻底规避 403 模型冲突）
         # ==========================================
-        st.subheader("🧠 Gemini 3.5 旗舰级足彩战术博弈深度报告")
-        with st.spinner("🤖 正在调度 3.5 Flash 专家思考内核结合主场优势进行硬核预测..."):
+        st.subheader("🧠 Gemini 工业级足彩战术博弈深度内参")
+        with st.spinner("🤖 正在调度稳定版高性能内核结合美、加、墨独立东道主特权进行策略生成..."):
             
             pedigree_A = TEAM_DATABASE[team_A]["Pedigree"]
             pedigree_B = TEAM_DATABASE[team_B]["Pedigree"]
@@ -234,18 +234,23 @@ if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_contai
                - {team_A}（底蕴权重 {pedigree_A}）：{TEAM_DATABASE[team_A]['Style']}
                - {team_B}（底蕴权重 {pedigree_B}）：{TEAM_DATABASE[team_B]['Style']}
             
-            请严格结合场地、美国（1.15）/加拿大（1.12）/墨西哥（1.12）差异化的主场特权特性能量、巨星残损率，撰写一份包含以下模块的足彩内参：
-            - 【主场优势与控场】：深度拆解主客场地利（包含美国的高分贝或加拿大的快草皮）对当前盘口克制关系的影响。
-            - 【数据合理性拆解】：结合XG和基本盘，向彩民解释为什么模型会得出这样的胜率与比分期望。
+            请严格在报告中同时考量：
+            1. 美国（加成1.15，高分贝哨向与美式巨型场馆博弈）
+            2. 加拿大（加成1.12，高纬度低温与人工合成快草皮盘口优势）
+            3. 墨西哥（加成1.12，高海拔缺氧生存生存危机）
+            
+            撰写一份包含以下模块的足彩策略报告：
+            - 【地缘主场优势与控场博弈】：结合具体的物理主场特性（如美国哨向或加拿大草皮），拆解其对当前盘口克制关系的影响。
+            - 【数据合理性拆解】：结合XG和基本盘，解释为什么模型考虑了动态因数后会得出这样的胜率。
             - 【足彩X因素防范】：直接指出哪些突发变数会颠覆这个冷冰冰的数学模型。
             字数控制在 400 字以内，直击痛点，一针见血。
             """
             try:
-                # 对接 3.5 世代官方生产标准模型字符串：'gemini-3.5-flash'
+                # 使用官方最稳定的生产级别通用通道，完美规避匿名云部署的 403 漏洞
                 response = client.models.generate_content(
-                    model='gemini-3.5-flash',
+                    model='gemini-2.5-flash',
                     contents=prompt,
                 )
                 st.write(response.text)
             except Exception as e:
-                st.error(f"3.5 Flash 智能策略生成失败，错误信息: {e}")
+                st.error(f"大模型策略生成失败，错误信息: {e}")
