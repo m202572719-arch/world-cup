@@ -10,15 +10,14 @@ import google.genai as genai
 try:
     client = genai.Client()
 except Exception as e:
-    st.error("Gemini API 客户端初始化失败，请检查云端 Secrets配置。")
+    st.error("Gemini API 客户端初始化失败，请检查云端 Secrets 配置。")
 
 # ==========================================
-# 2. 2026美加墨世界杯：严格对照官方分组图（48支正赛真实参赛队）
+# 2. 2026美加墨世界杯：官方正赛 48 强高精度量化数据库（严格对照分组图）
 # ==========================================
-# 权重基于最新实时Elo积分，Att(进攻系数), Def(防守系数), Pedigree(世界杯大赛底蕴)
 TEAM_DATABASE = {
     # --- Group A ---
-    "墨西哥": {"Elo": 1820, "Att": 1.12, "Def": 0.90, "Pedigree": 1.05, "Alt_Fit": True, "Style": "东道主，中美洲技术流，高海拔魔鬼主场，脚下传切快。"},
+    "墨西哥": {"Elo": 1820, "Att": 1.12, "Def": 0.90, "Pedigree": 1.05, "Alt_Fit": True, "Style": "东道主，中美洲技术流，阿兹特克高原魔鬼主场，脚下传切快。"},
     "南非": {"Elo": 1680, "Att": 0.96, "Def": 0.94, "Pedigree": 1.00, "Alt_Fit": False, "Style": "反击推进快，依靠整体就地小范围传导，但缺乏锋线强力终结者。"},
     "韩国": {"Elo": 1830, "Att": 1.15, "Def": 0.89, "Pedigree": 1.05, "Alt_Fit": False, "Style": "太极虎高位奔跑极其疯狂，前场巨星闪光爆发力强。"},
     "捷克": {"Elo": 1795, "Att": 1.10, "Def": 0.90, "Pedigree": 1.00, "Alt_Fit": False, "Style": "身体对抗极强，擅长高空球轰炸与两翼边路传中。"},
@@ -37,14 +36,14 @@ TEAM_DATABASE = {
 
     # --- Group D ---
     "美国": {"Elo": 1850, "Att": 1.15, "Def": 0.88, "Pedigree": 1.05, "Alt_Fit": False, "Style": "东道主，留洋青年军，主场冲击力和高频压迫极具侵略性。"},
-    "Paraguay": {"Elo": 1740, "Att": 0.92, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": True, "Style": "南美著名的低位硬骨头，死守反击能力强，球风极其极其凶悍。"},
+    "巴拉圭": {"Elo": 1740, "Att": 0.92, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": True, "Style": "南美著名的低位硬骨头，死守反击能力强，球风极其极其凶悍。"},
     "澳大利亚": {"Elo": 1785, "Att": 1.04, "Def": 0.90, "Pedigree": 1.00, "Alt_Fit": False, "Style": "澳洲袋鼠身体强壮，高空争顶、定位球及长传砸禁区是杀手锏。"},
     "土耳其": {"Elo": 1845, "Att": 1.18, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": False, "Style": "星月军团作风彪悍，前场青年天才爆破力强，擅长打对攻乱战。"},
 
     # --- Group E ---
     "德国": {"Elo": 1980, "Att": 1.28, "Def": 0.88, "Pedigree": 1.25, "Alt_Fit": False, "Style": "日耳曼战车重回稳健，强调中场控制与战术纪律，整体向前推进。"},
     "库拉索": {"Elo": 1550, "Att": 0.90, "Def": 1.05, "Pedigree": 1.00, "Alt_Fit": False, "Style": "大黑马，多名归化坐镇，具备突出的单兵身体素质。"},
-    "科特迪瓦": {"Elo": 1795, "Att": 1.14, "Def": 0.91, "Pedigree": 1.05, "Alt_Fit": False, "Style": "非洲大象身体素质拉满，中后场防守拦截硬度高，冲击力极强。"},
+    "科特迪瓦": {"Elo": 1795, "Att": 1.14, "Def": 0.91, "Pedigree": 1.05, "Alt_Fit": False, "Style": "非洲大象身体素质拉满，中后场防守拦截硬度高，冲击力极强. "},
     "厄瓜多尔": {"Elo": 1870, "Att": 1.08, "Def": 0.83, "Pedigree": 1.00, "Alt_Fit": True, "Style": "高原体能怪，中场疯狗逼抢，两翼边路插上飞快。"},
 
     # --- Group F ---
@@ -81,7 +80,7 @@ TEAM_DATABASE = {
     "葡萄牙": {"Elo": 2010, "Att": 1.32, "Def": 0.84, "Pedigree": 1.10, "Alt_Fit": False, "Style": "阵容极度豪华且均衡，巨星单兵终结能力顶级，擅长快速推进。"},
     "乌兹别克斯坦": {"Elo": 1745, "Att": 1.02, "Def": 0.90, "Pedigree": 1.00, "Alt_Fit": False, "Style": "中亚白狼，身体极为强壮，战术极其硬朗，中后场防守稳固。"},
     "哥伦比亚": {"Elo": 1930, "Att": 1.24, "Def": 0.84, "Pedigree": 1.05, "Alt_Fit": True, "Style": "狂野南美流，脚下技术与强悍对抗完美结合，近期状态火爆。"},
-    "刚果民主共和国": {"Elo": 1675, "Att": 0.98, "Def": 0.96, "Pedigree": 1.00, "Alt_Fit": False, "Style": "典型的非洲力量对抗流，前场靠乱战，防守硬度大。"},
+    "民主刚果": {"Elo": 1675, "Att": 0.98, "Def": 0.96, "Pedigree": 1.00, "Alt_Fit": False, "Style": "典型的非洲力量对抗流，前场靠乱战，防守硬度大。"},
 
     # --- Group L ---
     "英格兰": {"Elo": 2050, "Att": 1.35, "Def": 0.80, "Pedigree": 1.15, "Alt_Fit": False, "Style": "身价全球第一，边路突破与阵地轰炸能力顶级，作风严谨。"},
@@ -93,35 +92,39 @@ TEAM_DATABASE = {
 GLOBAL_AVG_GOALS = 1.35
 
 # ==========================================
-# 3. 动态彩票级别精密精算模型
+# 3. 动态全维度精算模型 (支持主客场双向东道主检测)
 # ==========================================
 def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A, squad_integrity_B):
     data_A, data_B = TEAM_DATABASE[team_A], TEAM_DATABASE[team_B]
     att_A, def_A = data_A["Att"], data_A["Def"]
     att_B, def_B = data_B["Att"], data_B["Def"]
     
-    # 伤病系数折损
+    # 伤病完整度折损系数
     att_A *= (squad_integrity_A / 100.0)
     att_B *= (squad_integrity_B / 100.0)
     
     lambda_A = att_A * def_B * GLOBAL_AVG_GOALS
     lambda_B = att_B * def_A * GLOBAL_AVG_GOALS
     
-    # 东道主天时优势
-    hosts = ["美国", "墨西哥", "加拿大"]
-    if team_A in hosts:
-        lambda_A *= 1.12
-    if team_B in hosts:
+    # 【全面修正】：差异化判断主场或客场的东道主权重
+    if team_A == "美国":
+        lambda_A *= 1.15  # 美国主场哨与美式场馆系数
+    elif team_A in ["墨西哥", "加拿大"]:
+        lambda_A *= 1.12  # 墨西哥、加拿大常规主场加成
+        
+    if team_B == "美国":
+        lambda_B *= 1.15
+    elif team_B in ["墨西哥", "加拿大"]:
         lambda_B *= 1.12
         
-    # 高海拔缺氧折损
+    # 高海拔地缘缺氧环境特殊折损 (仅针对墨西哥赛区激活)
     if is_high_altitude:
         if not data_A["Alt_Fit"]:
             lambda_A *= 0.92
         if not data_B["Alt_Fit"]:
             lambda_B *= 0.92
             
-    # 构建 6x6 双泊松离散概率空间矩阵
+    # 计算双泊松离散概率矩阵
     max_goals = 6
     score_matrix = np.zeros((max_goals, max_goals))
     for i in range(max_goals):
@@ -132,7 +135,7 @@ def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A
     prob_draw = float(np.sum(np.diag(score_matrix)))
     prob_B_win = float(np.sum(np.triu(score_matrix, 1)))
     
-    # 大赛底蕴(DNA密码)权重博弈微调
+    # 世界杯冠军DNA（Pedigree）权重博弈干预
     pedigree_gap = data_A["Pedigree"] - data_B["Pedigree"]
     if pedigree_gap > 0:
         prob_A_win += (pedigree_gap * 0.1)
@@ -141,11 +144,11 @@ def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A
         prob_B_win += (abs(pedigree_gap) * 0.1)
         prob_A_win -= (abs(pedigree_gap) * 0.1)
         
-    # 归一化收拢
+    # 归一化重整
     total = prob_A_win + prob_draw + prob_B_win
     prob_A_win, prob_draw, prob_B_win = prob_A_win/total, prob_draw/total, prob_B_win/total
     
-    # 精算精确波胆(比分)Top 3
+    # 提炼比分波胆前三名
     flat_indices = np.argsort(score_matrix.ravel())[::-1][:3]
     top_scores = []
     for idx in flat_indices:
@@ -155,36 +158,34 @@ def calculate_advanced_match(team_A, team_B, is_high_altitude, squad_integrity_A
     return prob_A_win, prob_draw, prob_B_win, lambda_A, lambda_B, top_scores
 
 # ==========================================
-# 4. Streamlit 彩票交互辅助控制台
+# 4. Streamlit 交互层
 # ==========================================
 st.set_page_config(page_title="2026世界杯精算推演器", page_icon="🏆", layout="wide")
 
-st.title("🏆 2026美加墨世界杯：48强官方正赛足彩精密辅助系统")
-st.markdown("⚠️ **数据申明：** 本系统底层已**100%严格依照你提交的官方真实分组图**重构。通过双泊松概率矩阵，严防垃圾数据误导彩票投注。")
+st.title("🏆 2026美加墨世界杯：48强正赛足彩精密辅助系统")
+st.markdown("⚠️ **数据安全重校版本：** 完美接入高级 3.5 Flash 开发接口。数学矩阵已双向绑定美、加、墨三大东道主独立主场盘口权重。")
 st.divider()
 
-# 侧边栏：验证球队总数，不多不少正好48支
 st.sidebar.header(f"📊 官方正赛 48 强精准量化看板")
 sidebar_df = pd.DataFrame.from_dict(TEAM_DATABASE, orient='index')[['Elo', 'Att', 'Def', 'Pedigree', 'Alt_Fit']]
 st.sidebar.dataframe(sidebar_df, height=600)
 
-st.subheader("🛠️ 彩票风控参数动态微调（结合突发停赛、赛地天气）")
+st.subheader("🛠️ 彩票临场变数调节（结合突发受伤、停赛、球场海拔）")
 col_env1, col_env2, col_env3 = st.columns(3)
 with col_env1:
-    is_altitude = st.checkbox("🏔️ 设定本场在墨西哥阿兹特克等高海拔缺氧球场（南美高原队获隐藏加成）")
+    is_altitude = st.checkbox("🏔️ 设定本场在墨西哥阿兹特克等高海拔缺氧球场（非高原队获进球期望扣减）")
 with col_env2:
-    integrity_A = st.slider("🎯 主队临场核心完整度 (%)", 50, 100, 100, help="如果核心主力突然受伤不让上，请向左调低进攻输出。")
+    integrity_A = st.slider("🎯 主队临场核心完整度 (%)", 50, 100, 100)
 with col_env3:
-    integrity_B = st.slider("🛡️ 客队临场核心完整度 (%)", 50, 100, 100, help="如果防守核心停赛，可调低对方完整度。")
+    integrity_B = st.slider("🛡️ 客队临场核心完整度 (%)", 50, 100, 100)
 
 st.divider()
 
-# 选择对阵
 col_a, col_b = st.columns(2)
 with col_a:
-    team_A = st.selectbox("🎯 选择主队 (Team A)", list(TEAM_DATABASE.keys()), index=4) # 默认加拿大
+    team_A = st.selectbox("🎯 选择主队 (Team A)", list(TEAM_DATABASE.keys()), index=4)  # 默认加拿大
 with col_b:
-    team_B = st.selectbox("🛡️ 选择客队 (Team B)", list(TEAM_DATABASE.keys()), index=7) # 默认波黑
+    team_B = st.selectbox("🛡️ 选择客队 (Team B)", list(TEAM_DATABASE.keys()), index=7)  # 默认波黑
 
 st.info(f"💡 **主队盘口实力分析 ({team_A})：** {TEAM_DATABASE[team_A]['Style']}")
 st.info(f"💡 **客队盘口实力分析 ({team_B})：** {TEAM_DATABASE[team_B]['Style']}")
@@ -197,11 +198,10 @@ if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_contai
             team_A, team_B, is_altitude, integrity_A, integrity_B
         )
         
-        # 严格的彩票精算数据可视化
         st.subheader("📊 独家足彩胜平负、比分精算期望")
         res_1, res_2, res_3 = st.columns(3)
         res_1.metric(f"【胜】{team_A} 胜率", f"{p_A:.2%}", f"期望进球: {exp_A:.2f}")
-        res_2.metric("【平】平局概率", f"{p_draw:.2%}", help="对应对角线比分概率交集，可参考防平。")
+        res_2.metric("【平】平局概率", f"{p_draw:.2%}")
         res_3.metric(f"【负】{team_B} 胜率", f"{p_B:.2%}", f"期望进球: {exp_B:.2f}")
         
         st.progress(int(p_A * 100), text=f"{team_A} 独赢胜出概率空间分布")
@@ -211,9 +211,11 @@ if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_contai
         st.write(score_text)
         st.divider()
         
-        # 挂载真正的 Gemini 3.5 旗舰级足球专家思维
+        # ==========================================
+        # 5. 调用大模型生成战术策略报告（对接 3.5 Flash 正规生产接口字符串）
+        # ==========================================
         st.subheader("🧠 Gemini 3.5 旗舰级足彩战术博弈深度报告")
-        with st.spinner("🤖 正在召集足彩精算专家团结合停赛、高原、让球盘进行硬核下注分析..."):
+        with st.spinner("🤖 正在调度 3.5 Flash 专家思考内核结合主场优势进行硬核预测..."):
             
             pedigree_A = TEAM_DATABASE[team_A]["Pedigree"]
             pedigree_B = TEAM_DATABASE[team_B]["Pedigree"]
@@ -232,17 +234,18 @@ if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_contai
                - {team_A}（底蕴权重 {pedigree_A}）：{TEAM_DATABASE[team_A]['Style']}
                - {team_B}（底蕴权重 {pedigree_B}）：{TEAM_DATABASE[team_B]['Style']}
             
-            请严格结合环境、东道主优势、巨星残损率，撰写一份包含以下模块的彩票策略报告：
-            - 【控场战术博弈】：深度拆解两队风格在当前物理变量下的克制关系。
+            请严格结合场地、美国（1.15）/加拿大（1.12）/墨西哥（1.12）差异化的主场特权特性能量、巨星残损率，撰写一份包含以下模块的足彩内参：
+            - 【主场优势与控场】：深度拆解主客场地利（包含美国的高分贝或加拿大的快草皮）对当前盘口克制关系的影响。
             - 【数据合理性拆解】：结合XG和基本盘，向彩民解释为什么模型会得出这样的胜率与比分期望。
-            - 【足彩X因素防范】：直接指出哪些突发变数（如落后全员压上、红牌爆发）会颠覆这个冷冰冰的数学模型。
+            - 【足彩X因素防范】：直接指出哪些突发变数会颠覆这个冷冰冰的数学模型。
             字数控制在 400 字以内，直击痛点，一针见血。
             """
             try:
+                # 对接 3.5 世代官方生产标准模型字符串：'gemini-3.5-flash'
                 response = client.models.generate_content(
                     model='gemini-3.5-flash',
                     contents=prompt,
                 )
                 st.write(response.text)
             except Exception as e:
-                st.error(f"大model推演失败，错误信息: {e}")
+                st.error(f"3.5 Flash 智能策略生成失败，错误信息: {e}")
