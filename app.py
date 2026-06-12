@@ -47,7 +47,7 @@ TEAM_DATABASE = {
     "厄瓜多尔": {"Elo": 1870, "Att": 1.08, "Def": 0.83, "Pedigree": 1.00, "Alt_Fit": True, "Style": "高原体能怪，中场疯狗逼抢，两翼边路插上飞快。"},
 
     # --- Group F ---
-    "荷兰": {"Elo": 1950, "Att": 1.22, "Def": 0.79, "Pedigree": 1.15, "Alt_Fit": False, "Style": "顶级中卫群领衔防线，全攻全守底蕴，但缺乏绝对尖刀中锋。"},
+    "荷兰": {"Elo": 1950, "Att": 1.22, "Def": 0.79, "Pedigree": 1.15, "Alt_Fit": False, "Style": "顶级中卫群领衔防线，全攻全守底蕴，但缺乏绝对尖刀中锋. "},
     "日本": {"Elo": 1925, "Att": 1.26, "Def": 0.84, "Pedigree": 1.05, "Alt_Fit": False, "Style": "亚洲地面传控天花板，高频就地反抢和小组传导配合极其娴熟。"},
     "瑞典": {"Elo": 1855, "Att": 1.20, "Def": 0.88, "Pedigree": 1.10, "Alt_Fit": False, "Style": "北欧力量与技术的结合，锋线球星极具终结力，攻防转换极快。"},
     "突尼斯": {"Elo": 1760, "Att": 0.98, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": False, "Style": "北非纪律流，极度擅长摆大巴、中场长线死守绞杀，十分顽固。"},
@@ -66,7 +66,7 @@ TEAM_DATABASE = {
 
     # --- Group I ---
     "法国": {"Elo": 2110, "Att": 1.52, "Def": 0.78, "Pedigree": 1.25, "Alt_Fit": False, "Style": "核武器级别的防守反击，两翼速度恐怖，中场硬度极高。"},
-    "塞内加尔": {"Elo": 1865, "Att": 1.18, "Def": 0.85, "Pedigree": 1.05, "Alt_Fit": False, "Style": "非洲特兰加雄狮，三线球星坐镇，爆发力与对抗力量无敌。"},
+    "塞内加尔": {"Elo": 1865, "Att": 1.18, "Def": 0.85, "Pedigree": 1.05, "Alt_Fit": False, "Style": "非洲特兰加雄狮，三线球星坐镇，爆发力与对抗力量无敌. "},
     "伊拉克": {"Elo": 1670, "Att": 0.98, "Def": 0.97, "Pedigree": 1.00, "Alt_Fit": False, "Style": "中东强悍球风，作风剽悍，身体对抗好，依靠高空球抢点。"},
     "挪威": {"Elo": 1835, "Att": 1.24, "Def": 0.89, "Pedigree": 1.00, "Alt_Fit": False, "Style": "前场拥有超级大杀器中锋，反击爆破和终结效率极高。"},
 
@@ -99,14 +99,14 @@ def calculate_advanced_match(team_A, team_B, venue_type, squad_integrity_A, squa
     att_A, def_A = data_A["Att"], data_A["Def"]
     att_B, def_B = data_B["Att"], data_B["Def"]
     
-    # 伤病核心阵容战力折损
+    # 核心阵容衰减系数
     att_A *= (squad_integrity_A / 100.0)
     att_B *= (squad_integrity_B / 100.0)
     
     lambda_A = att_A * def_B * GLOBAL_AVG_GOALS
     lambda_B = att_B * def_A * GLOBAL_AVG_GOALS
     
-    # 前端解耦单选框：差异化注入三大东道主主场物理因子
+    # 前端开关控制：注入三大东道主差异化加成
     if venue_type == "美国主场（NFL大型场馆 & 高分贝判罚优势）":
         if team_A == "美国":
             lambda_A *= 1.15
@@ -117,18 +117,18 @@ def calculate_advanced_match(team_A, team_B, venue_type, squad_integrity_A, squa
             lambda_A *= 1.12
         if team_B == "加拿大":
             lambda_B *= 1.12
-    elif venue_type == "墨西哥主场（2200米阿兹特克高原缺氧生态）":
+    elif venue_type == "降低哥打主场（2200米阿兹特克高原缺氧生态）":
         if team_A == "墨西哥":
             lambda_A *= 1.12
         if team_B == "墨西哥":
             lambda_B *= 1.12
-        # 高原缺氧地缘减损
+        # 高原缺氧惩罚项
         if not data_A["Alt_Fit"]:
             lambda_A *= 0.92
         if not data_B["Alt_Fit"]:
             lambda_B *= 0.92
             
-    # 计算 6x6 双泊松分布概率空间
+    # 计算双泊松离散进球概率矩阵
     max_goals = 6
     score_matrix = np.zeros((max_goals, max_goals))
     for i in range(max_goals):
@@ -139,7 +139,7 @@ def calculate_advanced_match(team_A, team_B, venue_type, squad_integrity_A, squa
     prob_draw = float(np.sum(np.diag(score_matrix)))
     prob_B_win = float(np.sum(np.triu(score_matrix, 1)))
     
-    # 冠军底蕴加权干预
+    # 冠军底蕴DNA加权
     pedigree_gap = data_A["Pedigree"] - data_B["Pedigree"]
     if pedigree_gap > 0:
         prob_A_win += (pedigree_gap * 0.1)
@@ -148,7 +148,7 @@ def calculate_advanced_match(team_A, team_B, venue_type, squad_integrity_A, squa
         prob_B_win += (abs(pedigree_gap) * 0.1)
         prob_A_win -= (abs(pedigree_gap) * 0.1)
         
-    # 归一化收拢
+    # 归一化重整
     total = prob_A_win + prob_draw + prob_B_win
     prob_A_win, prob_draw, prob_B_win = prob_A_win/total, prob_draw/total, prob_B_win/total
     
@@ -162,12 +162,12 @@ def calculate_advanced_match(team_A, team_B, venue_type, squad_integrity_A, squa
     return prob_A_win, prob_draw, prob_B_win, lambda_A, lambda_B, top_scores
 
 # ==========================================
-# 4. Streamlit 渲染控制台
+# 4. Streamlit 前端渲染面板
 # ==========================================
 st.set_page_config(page_title="2026世界杯精算推演器", page_icon="🏆", layout="wide")
 
 st.title("🏆 2026美加墨世界杯：48强官方正赛足彩精密辅助系统")
-st.markdown("⚠️ **公网环境高稳版：** 完美拉齐三大东道主物理因子，彻底清空云端鉴权 403 冲突。")
+st.markdown("⚠️ **地缘变量前端拉满版本：** 本系统已无缝匹配高级 SDK 字符串，完美支持东道主物理盘口权重调节。")
 st.divider()
 
 st.sidebar.header(f"📊 官方正赛 48 强精准量化看板")
@@ -224,7 +224,7 @@ if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_contai
         st.divider()
         
         # ==========================================
-        # 5. 调用公网最稳内核生成战术内参 (彻底消灭 403 漏洞)
+        # 5. 调用全面适配新版 SDK 的主力稳定生产型号
         # ==========================================
         st.subheader("🧠 Gemini 工业级足彩战术博弈深度内参")
         with st.spinner("🤖 正在调度稳定版高性能内核结合美、加、墨独立东道主特权进行内参生成..."):
@@ -253,9 +253,9 @@ if st.button("🔥 运行泊松矩阵进行足彩盘口精密推演", use_contai
             字数控制在 400 字以内，直击痛点，一针见血。
             """
             try:
-                # 降维调度官方公网最稳定的免费级量产内核 gemini-1.5-flash，100% 绕过 403 阻断
+                # 严格拉齐 google-genai 正式版接口模型代号：'gemini-2.5-flash'
                 response = client.models.generate_content(
-                    model='gemini-1.5-flash',
+                    model='gemini-2.5-flash',
                     contents=prompt,
                 )
                 st.write(response.text)
