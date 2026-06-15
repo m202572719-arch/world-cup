@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 from scipy.stats import poisson
 import requests
-import json
-import os
 
 # ==========================================
 # 1. 2026美加墨世界杯：官方正赛 48 强全量量化数据库
@@ -86,7 +84,7 @@ TEAM_DATABASE = {
 GLOBAL_AVG_GOALS = 1.35
 
 # ==========================================
-# 3. 实时抓取今日比分与 12 组积分榜 (ESPN 接口)
+# 3. 自动化数据同步中心 (ESPN 接口比分与积分抓取)
 # ==========================================
 def fetch_world_cup_data():
     url = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
@@ -118,7 +116,7 @@ def fetch_world_cup_data():
     return scores, standings
 
 # ==========================================
-# 4. 精算数学模型：半全场 + 去平滑 + 淘汰赛瓜分
+# 4. 精算核心数学引擎：去平滑 + 半全场 + 淘汰赛瓜分
 # ==========================================
 def calculate_advanced_match(team_A, team_B, venue_type, integrity_A, integrity_B, aggression_factor, is_knockout):
     data_A, data_B = TEAM_DATABASE[team_A], TEAM_DATABASE[team_B]
@@ -140,7 +138,7 @@ def calculate_advanced_match(team_A, team_B, venue_type, integrity_A, integrity_
         if not data_A["Alt_Fit"]: lambda_A *= 0.92
         if not data_B["Alt_Fit"]: lambda_B *= 0.92
 
-    # --- 🕒 半全场拆分 (上半场 43% / 下半场 57%) ---
+    # 上半场 43% / 下半场 57%
     lambda_A_fh, lambda_B_fh = lambda_A * 0.43, lambda_B * 0.43
     lambda_A_sh, lambda_B_sh = lambda_A * 0.57, lambda_B * 0.57
     max_half_goals = 4
@@ -168,7 +166,7 @@ def calculate_advanced_match(team_A, team_B, venue_type, integrity_A, integrity_
     for k in ht_ft_space: ht_ft_space[k] /= total_ht_ft
     top_ht_ft = sorted(ht_ft_space.items(), key=lambda x: x[1], reverse=True)[:3]
 
-    # --- 📊 90分钟去平滑全场波胆精算 ---
+    # 全场波胆精算
     max_fg = 6
     score_matrix = np.zeros((max_fg, max_fg))
     for i in range(max_fg):
@@ -215,36 +213,11 @@ def calculate_advanced_match(team_A, team_B, venue_type, integrity_A, integrity_
     return p_win_A, p_draw, p_win_B, lambda_A, lambda_B, top_scores, top_ht_ft
 
 # ==========================================
-# 5. HTTP 直连免流大模型策略生成函数 (粉碎403/404)
-# ==========================================
-def request_gemini_via_http(prompt_text):
-    # 从 Streamlit Cloud 环境变量中读取用户配置的真实的 GEMINI_API_KEY
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        return "⚠️ 未在 Streamlit Secrets 中检测到有效 GEMINI_API_KEY，请在管理页面补齐该配置。"
-    
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-    headers = {"Content-Type": "application/json"}
-    payload = {"contents": [{"parts": [{"text": prompt_text}]}]}
-    
-    try:
-        response = requests.post(url, headers=headers, json=payload, timeout=10)
-        if response.status_code == 200:
-            candidates = response.json().get("candidates", [{}])
-            if candidates:
-                return candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "未获取到有效分析。")
-        else:
-            return f"❌ 谷歌网关响应拦截 (状态码: {response.status_code})。建议检查当前密匙配额是否耗尽。"
-    except Exception as e:
-        return f"⚠️ 网络连接异常: {e}"
-    return "无法完成推演文本生成。"
-
-# ==========================================
-# 6. Streamlit 渲染控制台
+# 5. Streamlit 界面渲染
 # ==========================================
 st.set_page_config(page_title="2026世界杯精密推演系统", page_icon="🏆", layout="wide")
 st.title("🏆 2026美加墨世界杯：48强正赛官方数据高级精算与全维度辅助控制台")
-st.markdown("⚠️ **终极足彩闭环版：** 已通过 HTTP 直连底层彻底攻克 SDK 带来的 `403/404` 鉴权漏洞，报告闪电吐出！")
+st.markdown("📈 **纯算法精算版：** 已彻底移除不稳定的外部大模型文本模块，带来更快的毫秒级足彩数据推演体验。")
 st.divider()
 
 # 侧边栏
@@ -334,30 +307,3 @@ if st.button("🔥 启动多维泊松时间矩阵进行足彩精密兵盘推演"
     ht_col1.metric("🔥 黄金选项 1", f"【{top_ht_ft[0][0]}】", f"精确几率: {top_ht_ft[0][1]:.2%}")
     ht_ft_col2.metric("🎯 次热防线 2", f"【{top_ht_ft[1][0]}】", f"精确几率: {top_ht_ft[1][1]:.2%}")
     ht_ft_col3.metric("🔮 冷门博弈 3", f"【{top_ht_ft[2][0]}】", f"精确几率: {top_ht_ft[2][1]:.2%}")
-    st.divider()
-    
-    st.subheader("🧠 Gemini 工业级足彩战术博弈深度内参")
-    with st.spinner("🤖 正在安全直连生产级稳定内核进行全盘决策分析..."):
-        pedigree_A = TEAM_DATABASE[team_A]["Pedigree"]
-        pedigree_B = TEAM_DATABASE[team_B]["Pedigree"]
-        
-        prompt = f"""
-        你是一位享誉全球的硬核足球足彩精算大师，行文风格锐利、专业、极具博弈论视角的金钱说服力。
-        请针对这场2026世界杯焦点大战进行足彩下注层面的战术推演：{team_A} VS {team_B}。
-        
-        后端双泊松精算模型给出的确定性上下文如下：
-        1. 全场胜率：{team_A}胜率 {p_A:.1%}，平局率 {p_draw:.1%}，{team_B}胜率 {p_B:.1%}（淘汰赛机制已生效={is_knockout}）。
-        2. 期望进球（XG）：{team_A}为 {exp_A:.2f}，{team_B}为 {exp_B:.2f}。
-        3. 精算半全场概率前三名为：{top_ht_ft[0][0]}({top_ht_ft[0][1]:.1%})、{top_ht_ft[1][0]}({top_ht_ft[1][1]:.1%})、{top_ht_ft[2][0]}({top_ht_ft[2][1]:.1%})。
-        4. 选定赛场变量区域：{venue}。
-        5. 全场比分概率前三名：{top_scores[0][0]}、{top_scores[1][0]}。
-        
-        请结合时间衰减加成、上半场阵地大巴、下半场体能博弈特征，以及最新小组出线积分形势的紧迫度，撰写一份包含以下模块的足彩内参：
-        - 【半全场走势拆解】：深度剖析为什么模型会得出前三名的【半全场组合】。
-        - 【足彩总进球与大小球配单推荐】：结合去平滑期望值与半全场组合，明确给出【大小球盘口】与【半全场高胜率串关配单】下注策略。
-        - 【足彩X因素防范】：直接指出哪些临场出线积分死命令会颠覆这个冷冰冰的数学模型。
-        字数控制在 400 字以内，一针见血。
-        """
-        # 直接调用 HTTP 传输，避开 SDK 的所有权限控制漏洞
-        analysis_report = request_gemini_via_http(prompt)
-        st.write(analysis_report)
