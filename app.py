@@ -13,11 +13,11 @@ except Exception as e:
     st.error("Gemini API 客户端初始化失败，请检查云端 Secrets 配置。")
 
 # ==========================================
-# 2. 2026美加墨世界杯：官方正赛 48 强严格量化数据库（不多不少正好48队）
+# 2. 2026美加墨世界杯：官方正赛 48 强量化数据库
 # ==========================================
 TEAM_DATABASE = {
     # --- Group A ---
-    "墨西哥": {"Elo": 1820, "Att": 1.12, "Def": 0.90, "Pedigree": 1.05, "Alt_Fit": True, "Style": "东道主，中美洲技术流，阿兹特克高海拔魔鬼主场，脚下传切极快。"},
+    "墨西哥": {"Elo": 1820, "Att": 1.12, "Def": 0.90, "Pedigree": 1.05, "Alt_Fit": True, "Style": "东道主，中美洲技术流，阿兹特克高海拔魔鬼主场，脚下传切快。"},
     "南非": {"Elo": 1680, "Att": 0.96, "Def": 0.94, "Pedigree": 1.00, "Alt_Fit": False, "Style": "反击推进快，依靠整体就地小范围传导，但缺乏锋线强力终结者。"},
     "韩国": {"Elo": 1830, "Att": 1.15, "Def": 0.89, "Pedigree": 1.05, "Alt_Fit": False, "Style": "太极虎高位奔跑和体能极其疯狂，前场巨星闪光爆发力强。"},
     "捷克": {"Elo": 1795, "Att": 1.10, "Def": 0.90, "Pedigree": 1.00, "Alt_Fit": False, "Style": "典型欧洲身体对抗型，擅长高空球轰炸与两翼边路起球传中。"},
@@ -36,7 +36,7 @@ TEAM_DATABASE = {
 
     # --- Group D ---
     "美国": {"Elo": 1850, "Att": 1.15, "Def": 0.88, "Pedigree": 1.05, "Alt_Fit": False, "Style": "东道主，全留洋青年军，主场大球场冲击力和高频压迫侵略性极强。"},
-    "巴拉圭": {"Elo": 1740, "Att": 0.92, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": True, "Style": "南美著名的低位硬骨头，死守坚固，球风极其极其彪悍凶狠。"},
+    "巴拉圭": {"Elo": 1740, "Att": 0.92, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": True, "Style": "南美著名的低位硬骨头，死守坚固，球风极其极其凶悍凶狠。"},
     "澳大利亚": {"Elo": 1785, "Att": 1.04, "Def": 0.90, "Pedigree": 1.00, "Alt_Fit": False, "Style": "袋鼠军团身体强壮，高空争顶、定位球长传砸禁区是头号大杀器。"},
     "土耳其": {"Elo": 1845, "Att": 1.18, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": False, "Style": "星月军团作风彪悍，前场妖星单兵爆破力强，极其擅长打对攻乱战。"},
 
@@ -50,7 +50,7 @@ TEAM_DATABASE = {
     "荷兰": {"Elo": 1950, "Att": 1.22, "Def": 0.79, "Pedigree": 1.15, "Alt_Fit": False, "Style": "顶级中卫群领衔防线，全攻全守底蕴，但进攻端缺乏绝对核心锋尖。"},
     "日本": {"Elo": 1925, "Att": 1.26, "Def": 0.84, "Pedigree": 1.05, "Alt_Fit": False, "Style": "亚洲地面传控天花板，全留洋阵容，高频就地反抢小组配合极其娴熟。"},
     "瑞典": {"Elo": 1855, "Att": 1.20, "Def": 0.88, "Pedigree": 1.10, "Alt_Fit": False, "Style": "北欧力量与技术的完美结合，锋线神锋终结力极高，攻防转换快。"},
-    "突尼斯": {"Elo": 1760, "Att": 0.98, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": False, "Style": "北非纪律流，极度擅长低位摆大巴、中场长线绞杀，球风十分顽固。"},
+    "突尼斯": {"Elo": 1760, "Att": 0.98, "Def": 0.88, "Pedigree": 1.00, "Alt_Fit": False, "Style": "北非纪律流，极度擅长低位摆大巴、中场长线死守绞杀，十分顽固。"},
 
     # --- Group G ---
     "比利时": {"Elo": 1905, "Att": 1.25, "Def": 0.89, "Pedigree": 1.05, "Alt_Fit": False, "Style": "欧洲红魔新老交替，进攻组织依旧犀利，但中后防线较怕速度冲击。"},
@@ -84,7 +84,7 @@ TEAM_DATABASE = {
 
     # --- Group L ---
     "英格兰": {"Elo": 2050, "Att": 1.35, "Def": 0.80, "Pedigree": 1.15, "Alt_Fit": False, "Style": "总身价高昂，边路突破与阵地战传中轰炸能力顶级，作风严谨稳健。"},
-    "克罗地亚": {"Elo": 1910, "Att": 1.12, "Def": 0.83, "Pedigree": 1.15, "Alt_Fit": False, "Style": "格子军团韧性恐怖，中场控节奏顶级，极擅长打大赛加时赛与消耗战。"},
+    "克罗地亚": {"Elo": 1910, "Att": 1.12, "Def": 0.83, "Pedigree": 1.15, "Alt_Fit": False, "Style": "魔笛领衔格子军团，控节奏顶级，大赛心理与韧性极度恐怖。"},
     "加纳": {"Elo": 1720, "Att": 1.06, "Def": 0.98, "Pedigree": 1.00, "Alt_Fit": False, "Style": "阵中多名年轻英超妖星，身体天赋爆表，但后防线纪律容易散架。"},
     "巴拿马": {"Elo": 1710, "Att": 0.98, "Def": 0.92, "Pedigree": 1.00, "Alt_Fit": False, "Style": "中北美坚韧反击流，阵型退防层次极其紧凑，反击打纵深套路熟。"}
 }
@@ -92,22 +92,21 @@ TEAM_DATABASE = {
 GLOBAL_AVG_GOALS = 1.35
 
 # ==========================================
-# 3. 动态全维度精算数学引擎（融合去平滑机制）
+# 3. 动态半全场+去平滑足彩精密数学引擎
 # ==========================================
 def calculate_advanced_match(team_A, team_B, venue_type, squad_integrity_A, squad_integrity_B, aggression_factor):
     data_A, data_B = TEAM_DATABASE[team_A], TEAM_DATABASE[team_B]
     att_A, def_A = data_A["Att"], data_A["Def"]
     att_B, def_B = data_B["Att"], data_B["Def"]
     
-    # 阵容伤病完整度折损
     att_A *= (squad_integrity_A / 100.0)
     att_B *= (squad_integrity_B / 100.0)
     
-    # 💥【精进】：引入核心激进烈度调节阀，直接放大期望值基本盘，强行拉大泊松方差
+    # 全场基础泊松期望进球
     lambda_A = att_A * def_B * GLOBAL_AVG_GOALS * aggression_factor
     lambda_B = att_B * def_A * GLOBAL_AVG_GOALS * aggression_factor
     
-    # 前端开关硬核干预：独立结算三大东道主地缘主场权重
+    # 注入三大东道主独立主场物理因子
     if venue_type == "美国主场（NFL大型场馆 & 高分贝判罚优势）" and team_A == "美国":
         lambda_A *= 1.15
     elif venue_type == "加拿大主场（高纬度低温 & 人工合成快草皮）" and team_A == "加拿大":
@@ -116,119 +115,161 @@ def calculate_advanced_match(team_A, team_B, venue_type, squad_integrity_A, squa
         if team_A == "墨西哥": lambda_A *= 1.12
         if not data_A["Alt_Fit"]: lambda_A *= 0.92
         if not data_B["Alt_Fit"]: lambda_B *= 0.92
-            
-    # 计算二元泊松概率矩阵空间 (最大计到 6 球)
-    max_goals = 6
-    score_matrix = np.zeros((max_goals, max_goals))
+
+    # --- 🕒 核心精进：拆解上半场与下半场独立分布矩阵 ---
+    # 引入国际统计学标准时间权重：上半场进球占43%，下半场进球占57%
+    lambda_A_fh, lambda_B_fh = lambda_A * 0.43, lambda_B * 0.43
+    lambda_A_sh, lambda_B_sh = lambda_A * 0.57, lambda_B * 0.57
+
+    max_goals = 4  # 半场进球绝大多数不超过4个
+    
+    # 1. 计算上半场矩阵
+    matrix_fh = np.zeros((max_goals, max_goals))
     for i in range(max_goals):
         for j in range(max_goals):
+            matrix_fh[i, j] = poisson.pmf(i, lambda_A_fh) * poisson.pmf(j, lambda_B_fh)
+            
+    # 2. 计算下半场独立进球矩阵
+    matrix_sh = np.zeros((max_goals, max_goals))
+    for i in range(max_goals):
+        for j in range(max_goals):
+            matrix_sh[i, j] = poisson.pmf(i, lambda_A_sh) * poisson.pmf(j, lambda_B_sh)
+
+    # 3. 提取半场独立概率空间
+    fh_win = float(np.sum(np.tril(matrix_fh, -1)))
+    fh_draw = float(np.sum(np.diag(matrix_fh)))
+    fh_loss = float(np.sum(np.triu(matrix_fh, 1)))
+    
+    sh_win = float(np.sum(np.tril(matrix_sh, -1)))
+    sh_draw = float(np.sum(np.diag(matrix_sh)))
+    sh_loss = float(np.sum(np.triu(matrix_sh, 1)))
+
+    # 4. 复合精算全网独家【半全场（HT/FT）】九项分布
+    ht_ft_space = {
+        "胜-胜": fh_win * sh_win,   "胜-平": fh_win * sh_draw,  "胜-负": fh_win * sh_loss,
+        "平-胜": fh_draw * sh_win,  "平-平": fh_draw * sh_draw, "平-负": fh_draw * sh_loss,
+        "负-胜": fh_loss * sh_win,  "负-平": fh_loss * sh_draw, "负-负": fh_loss * sh_loss
+    }
+    # 归一化半全场概率
+    total_ht_ft = sum(ht_ft_space.values())
+    for k in ht_ft_space: ht_ft_space[k] /= total_ht_ft
+
+    # 排序提取半全场概率最高前三名
+    top_ht_ft = sorted(ht_ft_space.items(), key=lambda x: x[1], reverse=True)[:3]
+
+    # --- 📊 结算单场90分钟去平滑全场矩阵 ---
+    max_fg = 6
+    score_matrix = np.zeros((max_fg, max_fg))
+    for i in range(max_fg):
+        for j in range(max_fg):
             score_matrix[i, j] = poisson.pmf(i, lambda_A) * poisson.pmf(j, lambda_B)
             
-    # 【狄克森-科尔修正】：当彩民加大激进调节时，强行压制 0:0, 1:1, 1:0 的均值回归平滑，补偿给大球比分
     if aggression_factor > 1.1:
         score_matrix[0, 0] *= 0.75
         score_matrix[1, 1] *= 0.80
         score_matrix[1, 0] *= 0.85
         score_matrix[0, 1] *= 0.85
-        score_matrix /= np.sum(score_matrix)  # 重新收拢归一化
+        score_matrix /= np.sum(score_matrix)
 
     prob_A_win = float(np.sum(np.tril(score_matrix, -1)))
     prob_draw = float(np.sum(np.diag(score_matrix)))
     prob_B_win = float(np.sum(np.triu(score_matrix, 1)))
     
-    # 世界杯底蕴博弈加权微调
+    # 冠军底蕴博弈加权
     pedigree_gap = data_A["Pedigree"] - data_B["Pedigree"]
     if pedigree_gap > 0:
-        prob_A_win += (pedigree_gap * 0.1)
-        prob_B_win -= (pedigree_gap * 0.1)
+        prob_A_win += (pedigree_gap * 0.08)
+        prob_B_win -= (pedigree_gap * 0.08)
     elif pedigree_gap < 0:
-        prob_B_win += (abs(pedigree_gap) * 0.1)
-        prob_A_win -= (abs(pedigree_gap) * 0.1)
+        prob_B_win += (abs(pedigree_gap) * 0.08)
+        prob_A_win -= (abs(pedigree_gap) * 0.08)
         
     total = prob_A_win + prob_draw + prob_B_win
     prob_A_win, prob_draw, prob_B_win = prob_A_win/total, prob_draw/total, prob_B_win/total
     
-    # 精算提取前三高比分波胆
+    # 全场波胆前三名
     flat_indices = np.argsort(score_matrix.ravel())[::-1][:3]
     top_scores = []
     for idx in flat_indices:
-        i, j = divmod(idx, max_goals)
+        i, j = divmod(idx, max_fg)
         top_scores.append((f"{i}:{j}", score_matrix[i, j] / np.sum(score_matrix)))
         
-    return prob_A_win, prob_draw, prob_B_win, lambda_A, lambda_B, top_scores
+    return prob_A_win, prob_draw, prob_B_win, lambda_A, lambda_B, top_scores, top_ht_ft
 
 # ==========================================
-# 4. Streamlit 渲染控制台
+# 4. Streamlit 渲染层
 # ==========================================
 st.set_page_config(page_title="2026世界杯精算推演器", page_icon="🏆", layout="wide")
 
-st.title("🏆 2026美加墨世界杯：48强官方正赛足彩精密辅助系统")
-st.markdown("⚠️ **官方全员无错版：** 严格对照正赛 48 强官方分组成员，内置**抗过度平滑机制**与**三大东道主前端独立控制阀**。")
+st.title("🏆 2026美加墨世界杯：48强正赛足彩半全场精密辅助系统")
+st.markdown("⚠️ **终极精算彩票版本：** 新增全网独家**半全场（HT/FT）状态精算矩阵**，联合反平滑去均值算法，直击高赔率盘口。")
 st.divider()
 
-# 侧边栏：不多不少，正好严格卡死 48 支官方正赛成员！
-st.sidebar.header(f"📊 官方正赛 48 强精准量化看板")
+st.sidebar.header(f"📊 官方正赛 48 强精密看板")
 sidebar_df = pd.DataFrame.from_dict(TEAM_DATABASE, orient='index')[['Elo', 'Att', 'Def', 'Pedigree', 'Alt_Fit']]
-st.sidebar.dataframe(sidebar_df, height=620)
+st.sidebar.dataframe(sidebar_df, height=600)
 
-st.subheader("🛠️ 彩票临场变数调节（三大东道主地缘优势完全由你掌控）")
+st.subheader("🛠️ 彩票临场变数调节控制台")
 col_env1, col_env2 = st.columns([2, 2])
 with col_env1:
     venue = st.radio(
-        "🏟️ 设定本场赛事的具体赛地环境（严谨绑定主场哨向与物理场地权重）",
-        [
-            "中立场地 / 其他常规赛区",
-            "美国主场（NFL大型场馆 & 高分贝判罚优势）",
-            "加拿大主场（高纬度低温 & 人工合成快草皮）",
-            "墨西哥主场（2200米阿兹特克高原缺氧生态）"
-        ],
-        index=2  # 默认加拿大赛场
+        "🏟️ 设定本场赛地的地缘环境因子（精准绑定主场判罚与物理场地权重）",
+        ["中立场地 / 其他常规赛区", "美国主场（NFL大型场馆 & 高分贝判罚优势）", "加拿大主场（高纬度低温 & 人工合成快草皮）", "墨西哥主场（2200米阿兹特克高原缺氧生态）"],
+        index=2  # 默认加拿大
     )
 with col_env2:
-    # 💥 去平滑的核心控制器！
-    agg_factor = st.slider("🔥 战术博弈激进烈度（强行打破平滑均值，拉大比分方差）", 0.8, 1.8, 1.3, step=0.1, help="拉到1.3以上，系统将压制低平比分，强制精算高进球乱战、大球波胆！")
+    agg_factor = st.slider("🔥 战术博弈激进烈度（强行打破平滑均值，拉大比分方差）", 0.8, 1.8, 1.3, step=0.1)
 
 st.markdown("##### 🩺 临场核心伤情折损")
 col_inj1, col_inj2 = st.columns(2)
-with col_inj1: integrity_A = st.slider("🎯 主队阵容伤病完整度 (%)", 50, 100, 100)
-with col_inj2: integrity_B = st.slider("🛡️ 客队阵容伤病完整度 (%)", 50, 100, 100)
+with col_inj1: integrity_A = st.slider("🎯 主队临场核心完整度 (%)", 50, 100, 100)
+with col_inj2: integrity_B = st.slider("🛡️ 客队临场核心完整度 (%)", 50, 100, 100)
 
 st.divider()
 
-# 对阵动态过滤选择
 col_a, col_b = st.columns(2)
-with col_a: team_A = st.selectbox("🎯 选择主队 (Team A)", list(TEAM_DATABASE.keys()), index=4)   # 默认加拿大
-with col_b: team_B = st.selectbox("🛡️ 选择客队 (Team B)", list(TEAM_DATABASE.keys()), index=7)   # 默认波黑
+with col_a: team_A = st.selectbox("🎯 选择主队 (Team A)", list(TEAM_DATABASE.keys()), index=4)  # 默认加拿大
+with col_b: team_B = st.selectbox("🛡️ 选择客队 (Team B)", list(TEAM_DATABASE.keys()), index=7)  # 默认波黑
 
 st.info(f"💡 **主队盘口实力分析 ({team_A})：** {TEAM_DATABASE[team_A]['Style']}")
 st.info(f"💡 **客队盘口实力分析 ({team_B})：** {TEAM_DATABASE[team_B]['Style']}")
 
-if st.button("🔥 运行去平滑泊松矩阵进行足彩盘口精密推演", use_container_width=True):
+if st.button("🔥 运行多维泊松时间矩阵进行半全场精密推演", use_container_width=True):
     if team_A == team_B:
         st.warning("⚠️ 相同球队无法交锋，请重新挑选对手。")
     else:
-        p_A, p_draw, p_B, exp_A, exp_B, top_scores = calculate_advanced_match(
+        p_A, p_draw, p_B, exp_A, exp_B, top_scores, top_ht_ft = calculate_advanced_match(
             team_A, team_B, venue, integrity_A, integrity_B, agg_factor
         )
         
-        st.subheader("📊 独家足彩胜平负、比分精算期望")
+        # 1. 渲染全场胜平负
+        st.subheader("📊 独家足彩胜平负、全场比分精算期望")
         res_1, res_2, res_3 = st.columns(3)
-        res_1.metric(f"【胜】{team_A} 胜率", f"{p_A:.2%}", f"去平滑期望进球: {exp_A:.2f}")
-        res_2.metric("【平】平局概率", f"{p_draw:.2%}")
-        res_3.metric(f"【负】{team_B} 胜率", f"{p_B:.2%}", f"去平滑期望进球: {exp_B:.2f}")
+        res_1.metric(f"【全场胜】{team_A} 胜率", f"{p_A:.2%}", f"去平滑期望进球: {exp_A:.2f}")
+        res_2.metric("【全场平】平局概率", f"{p_draw:.2%}")
+        res_3.metric(f"【全场负】{team_B} 胜率", f"{p_B:.2%}", f"去平滑期望进球: {exp_B:.2f}")
         
-        st.progress(int(p_A * 100), text=f"{team_A} 独赢胜出概率空间分布")
+        st.progress(int(p_A * 100), text=f"{team_A} 全场博弈胜出空间")
         
-        st.markdown("##### 🎯 精确波胆（比分）几率前三高预测（已启动 Dixon-Coles 抑制）：")
+        st.markdown("##### 🎯 全场精确波胆（比分）几率前三预测（Dixon-Coles 抑制）：")
         score_text = " ｜ ".join([f"预测 **{score}** (精确几率 {prob:.1%})" for score, prob in top_scores])
         st.write(score_text)
         st.divider()
         
-        # ==========================================
-        # 5. 调用全新 SDK 稳定生产接口（彻底杜绝 403 / 404 权限黑洞）
-        # ==========================================
+        # 💥 2. 核心精进：渲染全网独家【半全场（HT/FT）】预测结果面板
+        st.subheader("⏳ 独家全网首发：半全场（HT/FT）高赔率冷门几率精算")
+        ht_col1, ht_ft_col2, ht_ft_col3 = st.columns(3)
+        
+        # 渲染前三名高概率半全场组合
+        ht_col1.metric("🔥 黄金选项 1", f"【{top_ht_ft[0][0]}】", f"组合精确几率: {top_ht_ft[0][1]:.2%}")
+        ht_ft_col2.metric("🎯 次热防线 2", f"【{top_ht_ft[1][0]}】", f"组合精确几率: {top_ht_ft[1][1]:.2%}")
+        ht_ft_col3.metric("🔮 冷门博弈 3", f"【{top_ht_ft[2][0]}】", f"组合精确几率: {top_ht_ft[2][1]:.2%}")
+        
+        st.divider()
+        
+        # 3. 生产级稳定内核策略生成
         st.subheader("🧠 Gemini 工业级足彩战术博弈深度内参")
-        with st.spinner("🤖 正在安全调度生产级内核进行多变量让球盘决策生成..."):
+        with st.spinner("🤖 正在安全调度生产级内核进行半全场及大球盘决策生成..."):
             
             pedigree_A = TEAM_DATABASE[team_A]["Pedigree"]
             pedigree_B = TEAM_DATABASE[team_B]["Pedigree"]
@@ -238,21 +279,22 @@ if st.button("🔥 运行去平滑泊松矩阵进行足彩盘口精密推演", u
             请针对这场2026世界杯焦点大战进行足彩下注层面的战术推演：{team_A} VS {team_B}。
             
             后端双泊松精算模型给出的确定性上下文如下：
-            1. 精算胜率：{team_A}胜率 {p_A:.1%}，平局率 {p_draw:.1%}，{team_B}胜率 {p_B:.1%}。
+            1. 全场胜率：{team_A}胜率 {p_A:.1%}，平局率 {p_draw:.1%}，{team_B}胜率 {p_B:.1%}。
             2. 期望进球（XG）：{team_A}为 {exp_A:.2f}，{team_B}为 {exp_B:.2f}。
-            3. 选定赛场变量：{venue}。
-            4. 战术激进烈度系数设定：{agg_factor}。
-            5. 动态战力完整度：{team_A}={integrity_A}% ｜ {team_B}={integrity_B}%。
-            6. 精确比分概率前三名为：{top_scores[0][0]}、{top_scores[1][0]}、{top_scores[2][0]}。
+            3. 精算半全场概率前三名为：{top_ht_ft[0][0]}(几率{top_ht_ft[0][1]:.1%})、{top_ht_ft[1][0]}(几率{top_ht_ft[1][1]:.1%})、{top_ht_ft[2][0]}(几率{top_ht_ft[2][1]:.1%})。
+            4. 选定赛场变量：{venue}。
+            5. 全场比分概率前三名：{top_scores[0][0]}、{top_scores[1][0]}。
+            6. 战术本底：
+               - {team_A}（底蕴权重 {pedigree_A}）：{TEAM_DATABASE[team_A]['Style']}
+               - {team_B}（底蕴权重 {pedigree_B}）：{TEAM_DATABASE[team_B]['Style']}
             
-            请严格结合场地单选框、战术激进系数（agg_factor超过1.2代表两队打法大开大合，极易出大球冷门比分），撰写一份包含以下模块的足彩内参：
-            - 【地缘主场优势与控场博弈】：深度拆解你选择的赛地环境（美国大型橄榄球场判罚、加拿大人工低温快草皮或墨西哥高原）对当前盘口克制关系的影响。
-            - 【足彩大小球与让球下注推荐】：基于去平滑模型得出的两队期望进球数（XG）与比分，明确分析本场适合走【大球盘还是小球盘】，并结合两队底蕴给出下注独赢还是防平的斩钉截铁的建议。
-            - 【足彩X因素防范】：直接指出哪些临场突发变数（如落后全员压上、红牌爆发）会颠覆这个冷冰冰的数学模型。
+            请结合时间衰减加成、上半场阵地大巴和下半场体能博弈特征，撰写一份包含以下模块的足彩内参：
+            - 【半全场走势拆解】：深度剖析为什么模型会得出前三名的【半全场组合】（例如分析为什么容易出现“平-胜”或“胜-胜”）。
+            - 【足彩总进球与大小球投注】：结合去平滑期望值，斩钉截铁给出【大小球盘口】与【半全场玩法高胜率配单】策略。
+            - 【足彩X因素防范】：直接指出哪些临场主教练变阵会颠覆这个数学模型。
             字数控制在 400 字以内，直击痛点，一针见血。
             """
             try:
-                # 严格调用新版 SDK 专属的免费正式型号，100% 通过云端白名单
                 response = client.models.generate_content(
                     model='gemini-2.5-flash',
                     contents=prompt,
